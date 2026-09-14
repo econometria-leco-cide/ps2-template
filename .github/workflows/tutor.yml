@@ -1,0 +1,38 @@
+name: Tutor Socrático LECO
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  responder:
+    if: |
+      contains(github.event.comment.body, '@leco-bot') &&
+      github.event.comment.user.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install anthropic PyGithub
+
+      - name: Ejecutar tutor socrático
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_USER: ${{ github.event.comment.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO_FULL_NAME: ${{ github.repository }}
+        run: python .github/scripts/tutor.py

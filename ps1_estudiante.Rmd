@@ -1,0 +1,251 @@
+---
+title: "Actividad 1. Regresión Simple"
+subtitle: "Econometría LECO"
+author: "Nombre:"
+date: ""
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+**Entregable**: Un archivo PDF (R-Markdown) contestando correctamente a las preguntas abajo presentadas, así como el archivo `.Rmd`. Ambos archivos deben subirse a GitHub antes de la fecha límite, grabados con su nombre.
+
+> **📋 Antes de comenzar:** Lee el archivo `reglas_generales_course.md` que está en tu repositorio. Contiene las reglas de entrega, commits y uso del bot que aplican a todos los problem sets.
+
+---
+
+> **⚙️ Paso 1 — Cómo crear tu proyecto en RStudio (hazlo una sola vez)**
+>
+> 1. Acepta la tarea en el link que te compartió el profesor → se crea tu repositorio personal en GitHub
+> 2. Entra a tu repositorio → haz clic en el botón verde **"Code"** → copia la URL (termina en `.git`)
+> 3. Abre RStudio → `File` → `New Project` → `Version Control` → `Git`
+> 4. Pega la URL → elige una carpeta en tu computadora → click `Create Project`
+> 5. Verifica que ves `ps1_estudiante.Rmd` en el panel de archivos (esquina inferior derecha)
+>
+> A partir de aquí, **siempre abre el PS desde ese proyecto** (`File` → `Open Project`), no desde el archivo directamente.
+
+---
+
+> **📤 Paso 2 — Cómo guardar tu avance en GitHub (hazlo cada vez que avances)**
+>
+> Guardar en tu computadora (`Ctrl+S`) **no** sube los cambios a GitHub. Para que el profesor y el asistente vean el avance de tu trabajo, debes hacer:
+>
+> **Opción A — Panel Git de RStudio (más fácil):**
+> 1. Panel **Git** en RStudio (esquina superior derecha) → verás tus archivos modificados con una **M**
+> 2. Marca el **checkbox** junto a `ps1_estudiante.Rmd` (y el `.pdf` si ya compilaste)
+> 3. Click **Commit** → escribe un mensaje descriptivo, por ejemplo: `"avance P2b y P2c"`
+> 4. Click **Push** → tus cambios aparecen en GitHub.
+>
+> **Opción B — Terminal de RStudio (si el panel Git no funciona):**
+> 1. Ve a la pestaña **Terminal** (junto a la pestaña Console, panel inferior)
+> 2. Copia y pega estos comandos uno por uno:
+> ```
+> git add ps1_estudiante.Rmd
+> git commit -m "avance P2b y P2c"
+> git push origin main
+> ```
+>
+> **Recomendación:** haz commit y push al terminar cada pregunta, no solo al final.
+> Así queda registro de tu progreso y puedes recuperar versiones anteriores si algo falla.
+
+---
+
+> **📌 Paso 3 — Reglas de uso de IA**
+>
+> **Comenta tu código en español.** Todo bloque de código debe incluir comentarios que expliquen tu razonamiento. Por ejemplo:
+> ```
+> # Calculo SST como la variación total de Y respecto a su media
+> sst <- sum((y - mean(y))^2)
+> ```
+>
+> **Usa el tutor @leco-bot en GitHub.** Abre un *Issue* (en la pestaña de github *Issue*) en tu repositorio. Nombralo `Consultas PS1`. Luego de crear el issue  `Consultas PS1` escribe como comentario tu dudas mencionando `@leco-bot`. Tienes 5 consultas por día.
+> Por ejemplo: 
+>@leco-bot
+>1. Qué intento hacer: calcular R² manualmente en P2f
+>2. Error que obtuve: me sale un valor negativo
+>3. Lo que ya intenté: usé la fórmula SSE/SST
+>
+> **⚠️ Sistema de detección automática.** Cada push que haces es analizado automáticamente. El sistema detecta saltos grandes de código en un solo commit, código sin comentarios en español, y patrones inconsistentes con tu historial. Las alertas son visibles para el profesor y el asistente. La mejor evidencia de que el trabajo es tuyo son tus comentarios en español, tus consultas al bot y tu historial de commits.
+
+---
+
+## 1. Derive OLS utilizando las condiciones de primer orden que surgen de $\sum(y_i - \hat{y}_i)^2 = 0$
+
+*[Tu derivación aquí — usa LaTeX/Markdown]*
+
+---
+
+## 2. Genere sus propios datos para probar la teoría:
+
+Asuma que la ecuación poblacional está dada por $y_i = 15 + 7X_i + \mu_i$, con el término estocástico ($\mu$) distribuido normalmente con media de cero. $X$ toma valores aleatorios. *Recuerde que en la práctica no observamos esta ecuación, pero podemos estimarla con una muestra de datos para X e Y.*
+
+### a. Genere una muestra aleatoria de 100 observaciones y asuma una desviación estándar de 10:
+
+```{r datos-2a}
+help(rnorm)
+help(runif)
+
+set.seed(123)
+x     <- # TU CÓDIGO
+error <- # TU CÓDIGO
+y     <- # TU CÓDIGO
+```
+
+### b. Muestre un scatterplot de x e y, y describa brevemente la relación entre estas dos variables.
+
+```{r scatter-2b}
+# TU CÓDIGO
+```
+
+*[Tu descripción aquí]*
+
+### c. Estime la regresión conforme al script abajo y escriba la ecuación estimada.
+
+```{r regresion-2c}
+reg <- lm(y ~ x)
+summary(reg)
+anova(reg)
+
+sse <- sum((fitted(reg) - y)^2)
+sse
+```
+
+**Ecuación estimada:** $\hat{y}_i =$ *[Tu respuesta]*
+
+### d. Interprete el coeficiente de regresión.
+
+*[Tu respuesta aquí]*
+
+### e. ¿Cuál es el valor predicho de $Y$ cuando $X = \bar{x}$?
+
+```{r prediccion-2e}
+# TU CÓDIGO
+```
+
+*[Tu respuesta aquí]*
+
+### f. Calcule manualmente $R^2$.
+
+```{r r2-manual-2f}
+# TU CÓDIGO
+
+# Verificación:
+cat("R² manual:      ", r2_manual, "\n")
+cat("R² de summary():", summary(reg)$r.squared, "\n")
+```
+
+### g. Ejecute:
+
+```{r summary-2g}
+summary(fitted(reg))
+summary(y)
+```
+
+*[Comenta lo que observas]*
+
+---
+
+## 3. Creando sus propios datos para indagar $R^2$.
+
+### a. Ejecute el siguiente código, muestre los resultados e interprete $R^2$.
+
+```{r r2-sd5}
+set.seed(123)
+x        <- runif(100)
+error    <- rnorm(100, mean = 0, sd = 5)
+y        <- 2 + (5 * x) + error
+hist(y)
+
+regresion <- lm(y ~ x)
+summary(regresion)
+
+plot(x, y, main = "Main title",
+     xlab = "X axis title", ylab = "Y axis title",
+     pch = 19, frame = FALSE) +
+  abline(lm(y ~ x), col = "blue")
+```
+
+*[Interpretación de $R^2$]*
+
+### b. En el código anterior, modifique: $SD = 15$ e interprete $R^2$.
+
+```{r r2-sd15}
+# TU CÓDIGO
+```
+
+*[Interpretación de $R^2$]*
+
+### c. Muestre que $R^2$ es menor con $SD = 15$ en el error (hint: use SST, SSR). ¿Esto quiere decir que es "peor" la segunda regresión para calcular $\hat{\beta}$ en términos de sesgo y precisión? ¿Por qué sí o por qué no?
+
+```{r demostracion-3c}
+# TU CÓDIGO
+```
+
+*[Tu respuesta aquí]*
+
+---
+
+## 4. Regresión lineal con datos de Wooldridge.
+
+### a. Ejecute los siguientes comandos en R-Studio y muestre los resultados:
+
+```{r wooldridge}
+library(wooldridge)
+data("wage1")
+?wage1
+
+wagereg <- lm(lwage ~ educ, data = wage1)
+summary(wagereg)
+```
+
+### b. Interprete los coeficientes $\beta_0$ y $\beta_1$. ¿Es el signo de $\beta_1$ el esperado? ¿Por qué?
+
+*[Tu respuesta aquí]*
+
+### c. Obtenga $R^2$ mediante el cálculo de $SST$, $SSE$, $SSR$.
+
+```{r r2-wooldridge}
+# TU CÓDIGO
+```
+
+### d. ¿Bajo qué supuestos, de los estudiados en clase hasta ahora, podemos interpretar $\beta_1$ como el efecto de la educación en ingresos? Describa cada uno formalmente.
+
+*[Tu respuesta aquí]*
+
+### e. ¿Qué supuesto estándar estamos violando y por qué?
+
+*[Tu respuesta aquí]*
+
+### f. Demuestre formalmente el sesgo del estimador $\beta_1$ bajo violación de ese supuesto.
+
+*[Tu demostración en LaTeX/Markdown aquí]*
+
+---
+
+## 5. Utilizando datos de 2018 sobre ventas de casas en México, la siguiente ecuación es estimada, referente al precio de la casa y en relación con la distancia, en kilómetros, a un basurero municipal recientemente instalado:
+
+$$\log(Price) = 9.40 + 0.312 \,(dist)$$
+$$n = 135 \qquad R^2 = 0.162$$
+
+### a. Interprete el coeficiente de *dist*.
+
+*[Tu respuesta aquí]*
+
+### b. ¿Cree que esta estimación nos ofrece un efecto insesgado de la elasticidad *"ceteris paribus"* del precio respecto a la distancia? ¿Intuitivamente explique por qué? (piense en la decisión del municipio de colocar el basurero)
+
+*[Tu respuesta aquí]*
+
+### c. ¿Qué otros factores sobre la casa pueden afectar su precio dado $Cov(u, dist) \neq 0$?
+
+*[Tu respuesta aquí]*
+
+---
+
+```{r session-info, echo=FALSE}
+cat("Entregado:", format(Sys.time(), "%Y-%m-%d %H:%M"), "\n")
+```

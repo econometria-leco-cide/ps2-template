@@ -1,0 +1,38 @@
+name: Detector de Saltos de Código
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.Rmd'
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  analizar:
+    if: github.event.pusher.name != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Necesitamos el commit anterior para comparar
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install PyGithub
+
+      - name: Analizar diff y alertar si hay salto sospechoso
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_FULL_NAME: ${{ github.repository }}
+          PUSHER: ${{ github.event.pusher.name }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: python .github/scripts/detector.py
